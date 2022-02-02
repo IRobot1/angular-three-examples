@@ -1,0 +1,11 @@
+<ngt-mesh #mesh="ngtMesh"
+          (animateReady)="onAnimate(mesh.mesh)"
+          (click)="active = !active"
+          (pointerover)="hover = true"
+          (pointerout)="hover = false"
+          [scale]="active ? [1.5, 1.5, 1.5] : [1, 1, 1]"
+          [position]="position">
+
+  <ngt-box-geometry></ngt-box-geometry>
+  <ngt-mesh-basic-material [parameters]="{ color: hover ? 'turquoise' : 'tomato' }"></ngt-mesh-basic-material>
+</ngt-mesh>
