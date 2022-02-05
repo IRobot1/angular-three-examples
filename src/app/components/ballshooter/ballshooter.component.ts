@@ -1,8 +1,9 @@
-import { NgtRender } from "@angular-three/core";
-import { ChangeDetectionStrategy, Component } from "@angular/core";
+import { NgtCreatedState, NgtRender } from "@angular-three/core";
+import { AfterViewInit, ChangeDetectionStrategy, Component, OnInit, ViewChild } from "@angular/core";
 
 import * as THREE from 'three';
 import { Color, Vector3 } from 'three';
+import { ControllerSelected, XRControllerComponent } from "../xr-controller/xr-controller.component";
 
 
 class RandomSettings {
@@ -15,10 +16,15 @@ class RandomSettings {
   templateUrl: './ballshooter.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BallshooterComponent {
+export class BallshooterComponent implements OnInit, AfterViewInit {
+  @ViewChild('xr0') xr0?: XRControllerComponent;
+  @ViewChild('xr1') xr1?: XRControllerComponent;
+
   radius = 0.08;
 
   shapes: Array<RandomSettings> = [];
+
+  private state?: NgtCreatedState;
 
   constructor() { }
 
@@ -33,7 +39,38 @@ export class BallshooterComponent {
 
   }
 
+  ngAfterViewInit(): void {
+    if (this.state) {
+      if (this.xr0) this.xr0.ready(this.state);
+      if (this.xr1) this.xr1.ready(this.state);
+    }
+  }
+
+
+  ready(state: NgtCreatedState): void {
+    this.state = state;
+  }
+
+  private count = 0;
+
+  private handleController(room: THREE.Group, controller?: THREE.Group) {
+    const object = room.children[this.count++];
+
+    if (object && controller) {
+      console.warn(this.count)
+      object.position.copy(controller.position);
+      object.userData.velocity.x = (Math.random() - 0.5) * 3;
+      object.userData.velocity.y = (Math.random() - 0.5) * 3;
+      object.userData.velocity.z = (Math.random() - 9);
+      object.userData.velocity.applyQuaternion(controller.quaternion);
+    }
+    if (this.count === room.children.length) this.count = 0;
+  }
+
   onAnimate(event: NgtRender, room: THREE.Group) {
+    if (this.xr0 && this.xr0.isSelecting) { this.handleController(room, this.xr0.controller); }
+    if (this.xr1 && this.xr1.isSelecting) { this.handleController(room, this.xr1.controller); }
+
     // note that event.delta != event.clock.getDelta()
     const delta = event.clock.getDelta() * 0.8; // slow down simulation
 

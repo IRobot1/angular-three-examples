@@ -1,4 +1,7 @@
-<ngt-group #mesh="ngtGroup" 
+<app-xr-controller #xr0 ></app-xr-controller>
+<app-xr-controller #xr1 [index]="1"></app-xr-controller>
+
+<ngt-group #mesh="ngtGroup" [name]="'room'"
            (animateReady)="onAnimate($event, mesh.group)">
 
   <ngt-mesh *ngFor="let item of shapes" [position]="item.position" [userData]="{velocity: item.velocity}">
