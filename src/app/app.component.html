@@ -1,8 +1,16 @@
-<ngt-canvas style="height:calc(100vh - 18px);overflow:hidden">
-  <app-cube [position]="[2, 0, 0]"></app-cube>
-  <!--<app-cube [position]="[-2, 0, 0]"></app-cube>-->
-  <!--<ngt-mesh>
-    <ngt-box-geometry></ngt-box-geometry>
-    <ngt-mesh-basic-material></ngt-mesh-basic-material>
-  </ngt-mesh>-->
-</ngt-canvas>
+<div style="height:calc(100vh - 18px);overflow:hidden">
+  <ngt-canvas (created)="created($event)" [vr]="true"
+              [scene]="{ background: '#505050' | color }"
+              [camera]="{ fov: 50, position: [0, 1.6, 3]}">
+    <ngt-stats></ngt-stats>
+    <ngt-hemisphere-light [args]="['#606060', '#404040']"></ngt-hemisphere-light>
+    <app-xr-controller [state]="state" ></app-xr-controller>
+    <app-xr-controller [state]="state" [index]="1" ></app-xr-controller>
+
+    <!--<ngt-line-segments >
+      <ngt-line-basic-material></ngt-line-basic-material>
+    </ngt-line-segments>-->
+    <app-ballshooter></app-ballshooter>
+    <!--<app-cube [position]="[2, 0, 0]"></app-cube>-->
+  </ngt-canvas>
+</div>
