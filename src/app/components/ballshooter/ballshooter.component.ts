@@ -14,7 +14,7 @@ class RandomSettings {
 @Component({
   selector: 'app-ballshooter',
   templateUrl: './ballshooter.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  //changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BallshooterComponent implements OnInit, AfterViewInit {
   @ViewChild('xr0') xr0?: XRControllerComponent;
@@ -29,14 +29,16 @@ export class BallshooterComponent implements OnInit, AfterViewInit {
   constructor() { }
 
   ngOnInit(): void {
-    for (let i = 0; i < 200; i++) {
+    for (let i = 0; i < 100; i++) {
       this.shapes.push(new RandomSettings(
         '#' + new Color(Math.random() * 0xffffff).getHexString(),
         new Vector3(Math.random() * 4 - 2, Math.random() * 4, Math.random() * 4 - 2),
         new Vector3(Math.random() * 0.01 - 0.005, Math.random() * 0.01 - 0.005, Math.random() * 0.01 - 0.005),
       ));
     }
-
+    setInterval(() => {
+      console.warn(this.rate)
+    },1000)
   }
 
   ngAfterViewInit(): void {
@@ -52,6 +54,7 @@ export class BallshooterComponent implements OnInit, AfterViewInit {
   }
 
   private count = 0;
+  private rate = 0;
 
   private handleController(room: THREE.Group, controller?: THREE.Group) {
     const object = room.children[this.count++];
@@ -67,12 +70,18 @@ export class BallshooterComponent implements OnInit, AfterViewInit {
     if (this.count === room.children.length) this.count = 0;
   }
 
-  onAnimate(event: NgtRender, room: THREE.Group) {
+  animateMesh(mesh: THREE.Mesh) {
+    // don't remove this method, otherwise, no longer fixed frame rate!!!
+  }
+
+  animateGroup(event: NgtRender, room: THREE.Group) {
     if (this.xr0 && this.xr0.isSelecting) { this.handleController(room, this.xr0.controller); }
     if (this.xr1 && this.xr1.isSelecting) { this.handleController(room, this.xr1.controller); }
 
+    this.rate++;
+
     // note that event.delta != event.clock.getDelta()
-    const delta = event.clock.getDelta() * 0.8; // slow down simulation
+    const delta = event.delta;//clock.getDelta() ; // slow down simulation
 
     const radius = this.radius;
     const range = 3 - radius;
