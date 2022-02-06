@@ -1,6 +1,7 @@
 import { Component, Input } from "@angular/core";
-import { NgtCreatedState } from "@angular-three/core";
+import { NgtCreatedState, NgtRender } from "@angular-three/core";
 import * as THREE from "three";
+import { Group, XRInputSource } from "three";
 
 export interface ControllerSelected {
   controller: THREE.Group | undefined;
@@ -24,28 +25,30 @@ export class XRControllerComponent {
     scene.add(this.controller);
 
     this.controller.addEventListener('selectstart', (event) => {
-      const group = <THREE.Group>event.target;
-      group.userData.isSelecting = true;
+      const controller = <THREE.Group>event.target;
+      controller.userData.isSelecting = true;
     });
     this.controller.addEventListener('selectend', (event) => {
-      const group = <THREE.Group>event.target;
-      group.userData.isSelecting = false;
+      const controller = <THREE.Group>event.target;
+      controller.userData.isSelecting = false;
     });
     this.controller.addEventListener('connected', (event) => {
-      const group = <THREE.Group>event.target;
-      group.add(this.buildController(event.data));
+      const controller = <THREE.Group>event.target;
+      const source = <XRInputSource>event.data;
+      controller.name = source.handedness;
+      controller.add(this.buildController(source));
     });
     this.controller.addEventListener('disconnected', (event) => {
-      const group = <THREE.Group>event.target;
-      group.remove(group.children[0]);
+      const controller = <THREE.Group>event.target;
+      controller.remove(controller.children[0]);
     });
 
   }
 
-  private buildController(data: any) {
+  private buildController(data: XRInputSource) {
     let geometry, material;
 
-    // TODO: convert to declarative using *ngIf
+    // TODO: convert to declarative.  Use ng-content to allow complete customization
     if (data.targetRayMode == 'tracked-pointer') {
       geometry = new THREE.BufferGeometry();
       geometry.setAttribute('position', new THREE.Float32BufferAttribute([0, 0, 0, 0, 0, - 1], 3));
@@ -62,4 +65,40 @@ export class XRControllerComponent {
     }
   }
 
+  private INTERSECTED: any;
+
+  animateGroup(event: NgtRender) {
+    if (this.controller) {
+      const room = <Group>event.scene.getObjectByName('room');
+
+      // find intersections
+      const tempMatrix = new THREE.Matrix4();
+      tempMatrix.extractRotation(this.controller.matrixWorld);
+
+      const raycaster = new THREE.Raycaster();
+      raycaster.ray.origin.setFromMatrixPosition(this.controller.matrixWorld);
+      raycaster.ray.direction.set(0, 0, - 1).applyMatrix4(tempMatrix);
+
+      const intersects = raycaster.intersectObjects(room.children, false);
+
+      if (intersects.length > 0) {
+        if (this.INTERSECTED != intersects[0].object) {
+
+          if (this.INTERSECTED) this.INTERSECTED.material.emissive.setHex(this.INTERSECTED.currentHex);
+
+          this.INTERSECTED = intersects[0].object;
+          this.INTERSECTED.currentHex = this.INTERSECTED.material.emissive.getHex();
+          this.INTERSECTED.material.emissive.setHex(0xff0000);
+
+        }
+      } else {
+
+        if (this.INTERSECTED) {
+          this.INTERSECTED.material.emissive.setHex(this.INTERSECTED.currentHex);
+          this.INTERSECTED = undefined;
+        }
+
+      }
+    }
+  }
 }

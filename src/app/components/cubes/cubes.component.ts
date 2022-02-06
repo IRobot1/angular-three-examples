@@ -49,8 +49,6 @@ export class CubesComponent implements OnInit, AfterViewInit {
     this.state = state;
   }
 
-  private INTERSECTED: any;
-
   private handleController(delta: number, room: THREE.Group, controller?: THREE.Group) {
     if (controller) {
       if (controller.userData.isSelecting === true) {
@@ -65,41 +63,12 @@ export class CubesComponent implements OnInit, AfterViewInit {
 
         room.add(cube);
       }
-      // find intersections
-      const tempMatrix = new THREE.Matrix4();
-      tempMatrix.extractRotation(controller.matrixWorld);
-
-      const raycaster = new THREE.Raycaster();
-      raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
-      raycaster.ray.direction.set(0, 0, - 1).applyMatrix4(tempMatrix);
-
-      const intersects = raycaster.intersectObjects(room.children, false);
-
-
-      if (intersects.length > 0) {
-        if (this.INTERSECTED != intersects[0].object) {
-
-          if (this.INTERSECTED) this.INTERSECTED.material.emissive.setHex(this.INTERSECTED.currentHex);
-
-          this.INTERSECTED = intersects[0].object;
-          this.INTERSECTED.currentHex = this.INTERSECTED.material.emissive.getHex();
-          this.INTERSECTED.material.emissive.setHex(0xff0000);
-
-        }
-      } else {
-
-        if (this.INTERSECTED) {
-          this.INTERSECTED.material.emissive.setHex(this.INTERSECTED.currentHex);
-          this.INTERSECTED = undefined;
-        }
-
-      }
     }
   }
 
   animateGroup({ delta }: NgtRender, room: THREE.Group) {
     if (this.xr0) { this.handleController(delta * 60, room, this.xr0.controller); }
-    //if (this.xr1) { this.handleController(delta * 60, room, this.xr1.controller); }
+    if (this.xr1) { this.handleController(delta * 60, room, this.xr1.controller); }
 
     for (let i = 0; i < room.children.length; i++) {
 

@@ -1,7 +1,7 @@
 <app-xr-controller #xr0 ></app-xr-controller>
 <app-xr-controller #xr1 [index]="1"></app-xr-controller>
 
-<ngt-group #group="ngtGroup" 
+<ngt-group #group="ngtGroup" [name]="'room'"
            (animateReady)="animateGroup($event, group.group)">
 
   <ngt-mesh *ngFor="let item of shapes"
