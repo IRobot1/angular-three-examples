@@ -4,10 +4,12 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgtColorPipeModule, NgtCoreModule, NgtObject3dControllerModule, NgtRepeatModule } from '@angular-three/core';
 import { NgtMeshModule } from '@angular-three/core/meshes';
 import { NgtLineBasicMaterialModule, NgtMeshBasicMaterialModule, NgtMeshLambertMaterialModule } from '@angular-three/core/materials';
-import { NgtBoxGeometryModule, NgtIcosahedronGeometryModule } from '@angular-three/core/geometries';
+import { NgtBoxGeometryModule, NgtBufferGeometryModule, NgtIcosahedronGeometryModule } from '@angular-three/core/geometries';
 import { NgtHemisphereLightModule } from '@angular-three/core/lights';
 import { NgtStatsModule } from '@angular-three/core/stats';
 import { NgtGroupModule } from '@angular-three/core/group';
+import { NgtBufferAttributeModule } from '@angular-three/core/attributes';
+import { NgtLineModule } from '@angular-three/core/lines';
 
 import { AppComponent } from './app.component';
 import { CubeComponent } from './components/cube/cube.component';
@@ -38,8 +40,9 @@ import { CubesComponent } from './components/cubes/cubes.component';
     NgtObject3dControllerModule,
     NgtGroupModule,
     NgtStatsModule,
-    
-    
+    NgtBufferGeometryModule,
+    NgtBufferAttributeModule,
+    NgtLineModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

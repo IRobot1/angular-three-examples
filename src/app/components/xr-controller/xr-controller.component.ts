@@ -1,6 +1,7 @@
 import { Component, Input } from "@angular/core";
 import { NgtCreatedState, NgtRender } from "@angular-three/core";
 import { AdditiveBlending, BufferGeometry, Float32BufferAttribute, Group, Line, LineBasicMaterial, Matrix4, Mesh, MeshBasicMaterial, Raycaster, RingGeometry, XRInputSource } from "three";
+import { NgtLine } from "@angular-three/core/lines";
 
 export interface ControllerSelected {
   controller: Group | undefined;
@@ -15,6 +16,12 @@ export class XRControllerComponent {
   @Input() index = 0;
 
   controller?: Group;
+
+  position = new Float32Array([0, 0, 0, 0, 0, - 1]);
+  color = new Float32Array([0.5, 0.5, 0.5, 0, 0, 0]);
+  blending = AdditiveBlending;
+
+  trackedpointerline?: Line;
 
   ready(state: NgtCreatedState): void {
     const renderer = state.renderer;
@@ -36,10 +43,12 @@ export class XRControllerComponent {
       const source = <XRInputSource>event.data;
       controller.name = source.handedness;
       if (source.targetRayMode == 'tracked-pointer') {
-        controller.add(this.buildTrackPointer());
+        if (this.trackedpointerline) {
+          controller.add(this.trackedpointerline);
+        }
       }
       else if (source.targetRayMode == 'gaze') {
-        state.camera.add(this.buildGaze());
+        controller.add(this.buildGaze());
       }
     });
     this.controller.addEventListener('disconnected', (event) => {
@@ -49,14 +58,8 @@ export class XRControllerComponent {
 
   }
 
-  private buildTrackPointer() {
-    // TODO: convert to declarative.  Use ng-content to allow complete customization
-    const geometry = new BufferGeometry();
-    geometry.setAttribute('position', new Float32BufferAttribute([0, 0, 0, 0, 0, - 1], 3));
-    geometry.setAttribute('color', new Float32BufferAttribute([0.5, 0.5, 0.5, 0, 0, 0], 3));
-
-    const material = new LineBasicMaterial({ vertexColors: true, blending: AdditiveBlending });
-    return new Line(geometry, material);
+  lineready(line: Line) {
+    this.trackedpointerline = line;
   }
 
   private buildGaze() {
