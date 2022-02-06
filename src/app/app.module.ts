@@ -13,6 +13,7 @@ import { AppComponent } from './app.component';
 import { CubeComponent } from './components/cube/cube.component';
 import { BallshooterComponent } from './components/ballshooter/ballshooter.component';
 import { XRControllerComponent } from './components/xr-controller/xr-controller.component';
+import { CubesComponent } from './components/cubes/cubes.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { XRControllerComponent } from './components/xr-controller/xr-controller.
     XRControllerComponent,
     CubeComponent,
     BallshooterComponent,
+    CubesComponent,
   ],
   imports: [
     BrowserModule,
@@ -35,7 +37,8 @@ import { XRControllerComponent } from './components/xr-controller/xr-controller.
     NgtHemisphereLightModule,
     NgtObject3dControllerModule,
     NgtGroupModule,
-    NgtStatsModule
+    NgtStatsModule,
+    
     
   ],
   providers: [],

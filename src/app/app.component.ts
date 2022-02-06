@@ -27,6 +27,10 @@ export class AppComponent {
     room.geometry.translate(0, 3, 0);
     scene.add(room);
 
+    const light = new THREE.DirectionalLight(0xffffff);
+    light.position.set(1, 1, 1).normalize();
+    scene.add(light);
+
     // The XRControllerModelFactory will automatically fetch controller models
     // that match what the user is holding as closely as possible. The models
     // should be attached to the object returned from getControllerGrip in

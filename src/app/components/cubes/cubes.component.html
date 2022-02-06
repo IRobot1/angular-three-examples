@@ -1,0 +1,13 @@
+<app-xr-controller #xr0 ></app-xr-controller>
+<app-xr-controller #xr1 [index]="1"></app-xr-controller>
+
+<ngt-group #group="ngtGroup" 
+           (animateReady)="animateGroup($event, group.group)">
+
+  <ngt-mesh *ngFor="let item of shapes"
+            [position]="item.position" [rotation]="item.rotation" [scale]="item.scale" [userData]="{velocity: item.velocity}"
+            #mesh="ngtMesh" (animateReady)="undefined">
+    <ngt-mesh-lambert-material [parameters]="{ color: item.color }"></ngt-mesh-lambert-material>
+    <ngt-box-geometry [args]="[0.15,0.15,0.15]"></ngt-box-geometry>
+  </ngt-mesh>
+</ngt-group>

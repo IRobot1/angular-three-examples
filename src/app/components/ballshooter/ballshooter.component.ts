@@ -28,7 +28,7 @@ export class BallshooterComponent implements OnInit, AfterViewInit {
   constructor() { }
 
   ngOnInit(): void {
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 200; i++) {
       this.shapes.push(new RandomSettings(
         '#' + new Color(Math.random() * 0xffffff).getHexString(),
         new Vector3(Math.random() * 4 - 2, Math.random() * 4, Math.random() * 4 - 2),

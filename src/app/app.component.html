@@ -1,11 +1,12 @@
 <div style="height:calc(100vh - 18px);overflow:hidden">
-  <ngt-canvas (created)="created($event);ballshooter.ready($event)" [vr]="true"
+  <ngt-canvas (created)="created($event);example.ready($event)" [vr]="true"
               [scene]="{ background: '#505050' | color }"
               [camera]="{ fov: 50, position: [0, 1.6, 3]}">
     <ngt-stats></ngt-stats>
     <ngt-hemisphere-light [args]="['#606060', '#404040']"></ngt-hemisphere-light>
 
-    <app-ballshooter #ballshooter></app-ballshooter>
+    <!--<app-ballshooter #example></app-ballshooter>-->
+    <app-vr-cubes #example></app-vr-cubes>
     <!--<app-cube [position]="[2, 0, 0]"></app-cube>-->
   </ngt-canvas>
 </div>
