@@ -1,31 +1,17 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { NgtCreatedState } from '@angular-three/core';
 
 import { BoxLineGeometry } from 'three/examples/jsm/geometries/BoxLineGeometry.js';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory.js';
 import * as THREE from 'three';
-import { AfterViewInit } from '@angular/core';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  //changeDetection: ChangeDetectionStrategy.OnPush,
-  //  styleUrls: ['./app.component.css']
-  //  providers: [
-  //    { provide: NGT_CANVAS_OPTIONS, useValue: provideCanvasOptions({ projectContent: false }) }
-  //  ]
 })
-export class AppComponent implements OnInit, AfterViewInit {
+export class AppComponent {
   state?: NgtCreatedState;
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
-  ngAfterViewInit(): void {
-  }
 
   created(event: NgtCreatedState) {
     this.state = event;
@@ -56,7 +42,5 @@ export class AppComponent implements OnInit, AfterViewInit {
     const controllerGrip2 = renderer.xr.getControllerGrip(1);
     controllerGrip2.add(controllerModelFactory.createControllerModel(controllerGrip2));
     scene.add(controllerGrip2);
-
-
   }
 }

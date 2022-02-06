@@ -1,5 +1,5 @@
+import { Component, Input } from "@angular/core";
 import { NgtCreatedState } from "@angular-three/core";
-import { ChangeDetectionStrategy, Component, Input } from "@angular/core";
 import * as THREE from "three";
 
 export interface ControllerSelected {
@@ -10,13 +10,11 @@ export interface ControllerSelected {
 @Component({
   selector: 'app-xr-controller',
   templateUrl: './xr-controller.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class XRControllerComponent {
   @Input() index = 0;
 
   controller?: THREE.Group;
-  isSelecting = false;
 
   ready(state: NgtCreatedState): void {
     const renderer = state.renderer;
@@ -25,13 +23,13 @@ export class XRControllerComponent {
     this.controller = renderer.xr.getController(this.index);
     scene.add(this.controller);
 
-    this.controller.addEventListener('selectstart', () => {
-      this.isSelecting = true;
-      console.warn(this.isSelecting)
+    this.controller.addEventListener('selectstart', (event) => {
+      const group = <THREE.Group>event.target;
+      group.userData.isSelecting = true;
     });
-    this.controller.addEventListener('selectend', () => {
-      this.isSelecting = false;
-      console.warn(this.isSelecting)
+    this.controller.addEventListener('selectend', (event) => {
+      const group = <THREE.Group>event.target;
+      group.userData.isSelecting = false;
     });
     this.controller.addEventListener('connected', (event) => {
       const group = <THREE.Group>event.target;

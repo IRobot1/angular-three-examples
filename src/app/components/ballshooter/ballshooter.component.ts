@@ -1,9 +1,9 @@
 import { NgtCreatedState, NgtRender } from "@angular-three/core";
-import { AfterViewInit, ChangeDetectionStrategy, Component, OnInit, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
 
 import * as THREE from 'three';
 import { Color, Vector3 } from 'three';
-import { ControllerSelected, XRControllerComponent } from "../xr-controller/xr-controller.component";
+import { XRControllerComponent } from "../xr-controller/xr-controller.component";
 
 
 class RandomSettings {
@@ -14,7 +14,6 @@ class RandomSettings {
 @Component({
   selector: 'app-ballshooter',
   templateUrl: './ballshooter.component.html',
-  //changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BallshooterComponent implements OnInit, AfterViewInit {
   @ViewChild('xr0') xr0?: XRControllerComponent;
@@ -36,9 +35,6 @@ export class BallshooterComponent implements OnInit, AfterViewInit {
         new Vector3(Math.random() * 0.01 - 0.005, Math.random() * 0.01 - 0.005, Math.random() * 0.01 - 0.005),
       ));
     }
-    setInterval(() => {
-      console.warn(this.rate)
-    },1000)
   }
 
   ngAfterViewInit(): void {
@@ -54,34 +50,25 @@ export class BallshooterComponent implements OnInit, AfterViewInit {
   }
 
   private count = 0;
-  private rate = 0;
 
   private handleController(room: THREE.Group, controller?: THREE.Group) {
-    const object = room.children[this.count++];
+    if (controller && controller.userData.isSelecting) {
+      const object = room.children[this.count++];
 
-    if (object && controller) {
-      console.warn(this.count)
-      object.position.copy(controller.position);
-      object.userData.velocity.x = (Math.random() - 0.5) * 3;
-      object.userData.velocity.y = (Math.random() - 0.5) * 3;
-      object.userData.velocity.z = (Math.random() - 9);
-      object.userData.velocity.applyQuaternion(controller.quaternion);
+      if (object) {
+        object.position.copy(controller.position);
+        object.userData.velocity.x = (Math.random() - 0.5) * 3;
+        object.userData.velocity.y = (Math.random() - 0.5) * 3;
+        object.userData.velocity.z = (Math.random() - 9);
+        object.userData.velocity.applyQuaternion(controller.quaternion);
+      }
+      if (this.count === room.children.length) this.count = 0;
     }
-    if (this.count === room.children.length) this.count = 0;
   }
 
-  animateMesh(mesh: THREE.Mesh) {
-    // don't remove this method, otherwise, no longer fixed frame rate!!!
-  }
-
-  animateGroup(event: NgtRender, room: THREE.Group) {
-    if (this.xr0 && this.xr0.isSelecting) { this.handleController(room, this.xr0.controller); }
-    if (this.xr1 && this.xr1.isSelecting) { this.handleController(room, this.xr1.controller); }
-
-    this.rate++;
-
-    // note that event.delta != event.clock.getDelta()
-    const delta = event.delta;//clock.getDelta() ; // slow down simulation
+  animateGroup({ delta }: NgtRender, room: THREE.Group) {
+    if (this.xr0 ) { this.handleController(room, this.xr0.controller); }
+    if (this.xr1 ) { this.handleController(room, this.xr1.controller); }
 
     const radius = this.radius;
     const range = 3 - radius;
