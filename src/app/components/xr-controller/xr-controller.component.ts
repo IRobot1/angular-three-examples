@@ -36,7 +36,12 @@ export class XRControllerComponent {
       const controller = <THREE.Group>event.target;
       const source = <XRInputSource>event.data;
       controller.name = source.handedness;
-      controller.add(this.buildController(source));
+      if (source.targetRayMode == 'tracked-pointer') {
+        controller.add(this.buildTrackPointer());
+      }
+      else if (source.targetRayMode == 'gaze') {
+        state.camera.add(this.buildGaze());
+      }
     });
     this.controller.addEventListener('disconnected', (event) => {
       const controller = <THREE.Group>event.target;
@@ -45,31 +50,27 @@ export class XRControllerComponent {
 
   }
 
-  private buildController(data: XRInputSource) {
-    let geometry, material;
-
+  private buildTrackPointer() {
     // TODO: convert to declarative.  Use ng-content to allow complete customization
-    if (data.targetRayMode == 'tracked-pointer') {
-      geometry = new THREE.BufferGeometry();
-      geometry.setAttribute('position', new THREE.Float32BufferAttribute([0, 0, 0, 0, 0, - 1], 3));
-      geometry.setAttribute('color', new THREE.Float32BufferAttribute([0.5, 0.5, 0.5, 0, 0, 0], 3));
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute([0, 0, 0, 0, 0, - 1], 3));
+    geometry.setAttribute('color', new THREE.Float32BufferAttribute([0.5, 0.5, 0.5, 0, 0, 0], 3));
 
-      material = new THREE.LineBasicMaterial({ vertexColors: true, blending: THREE.AdditiveBlending });
+    const material = new THREE.LineBasicMaterial({ vertexColors: true, blending: THREE.AdditiveBlending });
+    return new THREE.Line(geometry, material);
+  }
 
-      return new THREE.Line(geometry, material);
-    }
-    else { // 'gaze'
-      geometry = new THREE.RingGeometry(0.02, 0.04, 32).translate(0, 0, - 1);
-      material = new THREE.MeshBasicMaterial({ opacity: 0.5, transparent: true });
-      return new THREE.Mesh(geometry, material);
-    }
+  private buildGaze() {
+    const geometry = new THREE.RingGeometry(0.02, 0.04, 32).translate(0, 0, - 1);
+    const material = new THREE.MeshBasicMaterial({ opacity: 0.5, transparent: true });
+    return new THREE.Mesh(geometry, material);
   }
 
   private INTERSECTED: any;
 
   animateGroup(event: NgtRender) {
-    if (this.controller) {
-      const room = <Group>event.scene.getObjectByName('room');
+    const room = <Group>event.scene.getObjectByName('room');
+    if (this.controller && room) {
 
       // find intersections
       const tempMatrix = new THREE.Matrix4();
