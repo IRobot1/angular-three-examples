@@ -3,8 +3,8 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { NgtColorPipeModule, NgtCoreModule, NgtObject3dControllerModule, NgtRepeatModule } from '@angular-three/core';
 import { NgtMeshModule } from '@angular-three/core/meshes';
-import { NgtLineBasicMaterialModule, NgtMeshBasicMaterialModule, NgtMeshLambertMaterialModule } from '@angular-three/core/materials';
-import { NgtBoxGeometryModule, NgtBufferGeometryModule, NgtIcosahedronGeometryModule } from '@angular-three/core/geometries';
+import { NgtLineBasicMaterialModule, NgtMeshBasicMaterialModule, NgtMeshLambertMaterialModule, NgtMeshStandardMaterialModule } from '@angular-three/core/materials';
+import { NgtBoxGeometryModule, NgtBufferGeometryModule, NgtConeGeometryModule, NgtCylinderGeometryModule, NgtIcosahedronGeometryModule, NgtPlaneGeometryModule, NgtTorusGeometryModule } from '@angular-three/core/geometries';
 import { NgtHemisphereLightModule } from '@angular-three/core/lights';
 import { NgtStatsModule } from '@angular-three/core/stats';
 import { NgtGroupModule } from '@angular-three/core/group';
@@ -16,6 +16,7 @@ import { CubeComponent } from './components/cube/cube.component';
 import { BallshooterComponent } from './components/ballshooter/ballshooter.component';
 import { XRControllerComponent } from './components/xr-controller/xr-controller.component';
 import { CubesComponent } from './components/cubes/cubes.component';
+import { DraggingComponent } from './components/dragging/dragging.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { CubesComponent } from './components/cubes/cubes.component';
     CubeComponent,
     BallshooterComponent,
     CubesComponent,
+    DraggingComponent,
   ],
   imports: [
     BrowserModule,
@@ -43,6 +45,12 @@ import { CubesComponent } from './components/cubes/cubes.component';
     NgtBufferGeometryModule,
     NgtBufferAttributeModule,
     NgtLineModule,
+    NgtPlaneGeometryModule,
+    NgtMeshStandardMaterialModule,
+    NgtConeGeometryModule,
+    NgtCylinderGeometryModule,
+    NgtIcosahedronGeometryModule,
+    NgtTorusGeometryModule
   ],
   providers: [],
   bootstrap: [AppComponent]

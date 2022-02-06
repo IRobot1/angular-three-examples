@@ -1,12 +1,8 @@
 import { Component, Input } from "@angular/core";
 import { NgtCreatedState, NgtRender } from "@angular-three/core";
-import { AdditiveBlending, BufferGeometry, Float32BufferAttribute, Group, Line, LineBasicMaterial, Matrix4, Mesh, MeshBasicMaterial, Raycaster, RingGeometry, XRInputSource } from "three";
-import { NgtLine } from "@angular-three/core/lines";
+import { AdditiveBlending, Group, Line, Matrix4, Mesh, MeshBasicMaterial, Raycaster, RingGeometry, XRInputSource } from "three";
 
-export interface ControllerSelected {
-  controller: Group | undefined;
-  selected: boolean;
-}
+export type TrackType = 'pointer' | 'grab';
 
 @Component({
   selector: 'app-xr-controller',
@@ -14,6 +10,7 @@ export interface ControllerSelected {
 })
 export class XRControllerComponent {
   @Input() index = 0;
+  @Input() tracktype: TrackType = 'pointer';
 
   controller?: Group;
 
@@ -30,13 +27,26 @@ export class XRControllerComponent {
     this.controller = renderer.xr.getController(this.index);
     scene.add(this.controller);
 
+
     this.controller.addEventListener('selectstart', (event) => {
       const controller = <Group>event.target;
-      controller.userData.isSelecting = true;
+      if (this.tracktype == 'pointer') {
+        controller.userData.isSelecting = true;
+      }
+      else if (this.tracktype == 'grab') {
+        const room = <Group>scene.getObjectByName('room');
+        this.startgrab(controller, room);
+      }
     });
     this.controller.addEventListener('selectend', (event) => {
       const controller = <Group>event.target;
-      controller.userData.isSelecting = false;
+      if (this.tracktype == 'pointer') {
+        controller.userData.isSelecting = false;
+      }
+      else if (this.tracktype == 'grab') {
+        const room = <Group>scene.getObjectByName('room');
+        this.endgrab(controller, room);
+      }
     });
     this.controller.addEventListener('connected', (event) => {
       const controller = <Group>event.target;
@@ -59,6 +69,8 @@ export class XRControllerComponent {
   }
 
   lineready(line: Line) {
+    line.name = 'line';
+    line.scale.z = 1.5;
     this.trackedpointerline = line;
   }
 
@@ -68,37 +80,64 @@ export class XRControllerComponent {
     return new Mesh(geometry, material);
   }
 
-  private INTERSECTED: any;
+  private getIntersections(controller: Group, room: Group): any {
+    const tempMatrix = new Matrix4();
+
+    tempMatrix.identity().extractRotation(controller.matrixWorld);
+
+    const raycaster = new Raycaster();
+
+    raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
+    raycaster.ray.direction.set(0, 0, - 1).applyMatrix4(tempMatrix);
+
+    return raycaster.intersectObjects(room.children, false);
+  }
+
+  private startgrab(controller: Group, room: Group) {
+    if (this.IntersectObject) {
+      controller.attach(this.IntersectObject);
+      controller.userData.selected = this.IntersectObject;
+      if (this.trackedpointerline) {
+        this.trackedpointerline.scale.z = this.Intersect.distance;
+      }
+    }
+  }
+
+  private endgrab(controller: Group, room: Group) {
+    if (controller.userData.selected) {
+      const object = controller.userData.selected;
+      object.material.emissive.b = 0;
+
+      room.attach(object);
+      controller.userData.selected = undefined;
+      if (this.trackedpointerline) {
+        this.trackedpointerline.scale.z = 1.5;
+      }
+    }
+  }
+
+  private Intersect: any;
+  private IntersectObject: any;
 
   animateGroup(event: NgtRender) {
     const room = <Group>event.scene.getObjectByName('room');
     if (this.controller && room) {
 
-      // find intersections
-      const tempMatrix = new Matrix4();
-      tempMatrix.extractRotation(this.controller.matrixWorld);
-
-      const raycaster = new Raycaster();
-      raycaster.ray.origin.setFromMatrixPosition(this.controller.matrixWorld);
-      raycaster.ray.direction.set(0, 0, - 1).applyMatrix4(tempMatrix);
-
-      const intersects = raycaster.intersectObjects(room.children, false);
+      const intersects = this.getIntersections(this.controller, room);
 
       if (intersects.length > 0) {
-        if (this.INTERSECTED != intersects[0].object) {
+        if (this.IntersectObject != intersects[0].object) {
 
-          if (this.INTERSECTED) this.INTERSECTED.material.emissive.setHex(this.INTERSECTED.currentHex);
+          if (this.IntersectObject) this.IntersectObject.material.emissive.b = 0;
 
-          this.INTERSECTED = intersects[0].object;
-          this.INTERSECTED.currentHex = this.INTERSECTED.material.emissive.getHex();
-          this.INTERSECTED.material.emissive.setHex(0xff0000);
-
+          this.Intersect = intersects[0];
+          this.IntersectObject = this.Intersect.object;
+          this.IntersectObject.material.emissive.b = 1;
         }
       } else {
-
-        if (this.INTERSECTED) {
-          this.INTERSECTED.material.emissive.setHex(this.INTERSECTED.currentHex);
-          this.INTERSECTED = undefined;
+        if (this.IntersectObject) {
+          this.IntersectObject.material.emissive.b = 0;
+          this.IntersectObject = undefined;
         }
 
       }

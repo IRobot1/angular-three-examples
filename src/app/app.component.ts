@@ -4,6 +4,7 @@ import { NgtCreatedState } from '@angular-three/core';
 import { BoxLineGeometry } from 'three/examples/jsm/geometries/BoxLineGeometry.js';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory.js';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { DirectionalLight, LineBasicMaterial, LineSegments } from 'three';
 
 @Component({
@@ -13,10 +14,14 @@ import { DirectionalLight, LineBasicMaterial, LineSegments } from 'three';
 export class AppComponent {
   state?: NgtCreatedState;
 
-  created(event: NgtCreatedState) {
+  created(event: NgtCreatedState, container: HTMLDivElement) {
     this.state = event;
     const renderer = event.renderer;
     const scene = event.scene;
+
+    const controls = new OrbitControls(event.camera, container);
+    controls.target.set(0, 1.6, 0);
+    controls.update();
 
     document.body.appendChild(VRButton.createButton(event.renderer));
 
@@ -28,7 +33,13 @@ export class AppComponent {
     scene.add(room);
 
     const light = new DirectionalLight(0xffffff);
-    light.position.set(1, 1, 1).normalize();
+    light.position.set(0, 6, 0);
+    light.castShadow = true;
+    light.shadow.camera.top = 2;
+    light.shadow.camera.bottom = - 2;
+    light.shadow.camera.right = 2;
+    light.shadow.camera.left = - 2;
+    light.shadow.mapSize.set(4096, 4096);
     scene.add(light);
 
     // The XRControllerModelFactory will automatically fetch controller models
