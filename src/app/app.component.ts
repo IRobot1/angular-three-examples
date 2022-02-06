@@ -4,7 +4,7 @@ import { NgtCreatedState } from '@angular-three/core';
 import { BoxLineGeometry } from 'three/examples/jsm/geometries/BoxLineGeometry.js';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory.js';
-import * as THREE from 'three';
+import { DirectionalLight, LineBasicMaterial, LineSegments } from 'three';
 
 @Component({
   selector: 'app-root',
@@ -20,14 +20,14 @@ export class AppComponent {
 
     document.body.appendChild(VRButton.createButton(event.renderer));
 
-    const room = new THREE.LineSegments(
+    const room = new LineSegments(
       new BoxLineGeometry(6, 6, 6, 10, 10, 10),
-      new THREE.LineBasicMaterial({ color: 0x808080 })
+      new LineBasicMaterial({ color: 0x808080 })
     );
     room.geometry.translate(0, 3, 0);
     scene.add(room);
 
-    const light = new THREE.DirectionalLight(0xffffff);
+    const light = new DirectionalLight(0xffffff);
     light.position.set(1, 1, 1).normalize();
     scene.add(light);
 

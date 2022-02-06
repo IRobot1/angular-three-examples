@@ -1,8 +1,7 @@
 import { NgtCreatedState, NgtRender } from "@angular-three/core";
 import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
 
-import * as THREE from 'three';
-import { Color, Euler, Mesh, MeshBasicMaterial, MeshLambertMaterial, Object3D, Vector3 } from 'three';
+import { Color, Euler, Group, MathUtils, Vector3 } from 'three';
 import { XRControllerComponent } from "../xr-controller/xr-controller.component";
 
 
@@ -49,7 +48,7 @@ export class CubesComponent implements OnInit, AfterViewInit {
     this.state = state;
   }
 
-  private handleController(delta: number, room: THREE.Group, controller?: THREE.Group) {
+  private handleController(delta: number, room: Group, controller?: Group) {
     if (controller) {
       if (controller.userData.isSelecting === true) {
         const cube = room.children[0];
@@ -66,7 +65,7 @@ export class CubesComponent implements OnInit, AfterViewInit {
     }
   }
 
-  animateGroup({ delta }: NgtRender, room: THREE.Group) {
+  animateGroup({ delta }: NgtRender, room: Group) {
     if (this.xr0) { this.handleController(delta * 60, room, this.xr0.controller); }
     if (this.xr1) { this.handleController(delta * 60, room, this.xr1.controller); }
 
@@ -80,21 +79,21 @@ export class CubesComponent implements OnInit, AfterViewInit {
 
       if (cube.position.x < - 3 || cube.position.x > 3) {
 
-        cube.position.x = THREE.MathUtils.clamp(cube.position.x, - 3, 3);
+        cube.position.x = MathUtils.clamp(cube.position.x, - 3, 3);
         cube.userData.velocity.x = - cube.userData.velocity.x;
 
       }
 
       if (cube.position.y < 0 || cube.position.y > 6) {
 
-        cube.position.y = THREE.MathUtils.clamp(cube.position.y, 0, 6);
+        cube.position.y = MathUtils.clamp(cube.position.y, 0, 6);
         cube.userData.velocity.y = - cube.userData.velocity.y;
 
       }
 
       if (cube.position.z < - 3 || cube.position.z > 3) {
 
-        cube.position.z = THREE.MathUtils.clamp(cube.position.z, - 3, 3);
+        cube.position.z = MathUtils.clamp(cube.position.z, - 3, 3);
         cube.userData.velocity.z = - cube.userData.velocity.z;
 
       }

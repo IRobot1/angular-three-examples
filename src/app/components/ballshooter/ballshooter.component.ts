@@ -1,8 +1,7 @@
 import { NgtCreatedState, NgtRender } from "@angular-three/core";
 import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
 
-import * as THREE from 'three';
-import { Color, Vector3 } from 'three';
+import { Color, Group, MathUtils, Vector3 } from 'three';
 import { XRControllerComponent } from "../xr-controller/xr-controller.component";
 
 
@@ -51,7 +50,7 @@ export class BallshooterComponent implements OnInit, AfterViewInit {
 
   private count = 0;
 
-  private handleController(room: THREE.Group, controller?: THREE.Group) {
+  private handleController(room: Group, controller?: Group) {
     if (controller && controller.userData.isSelecting) {
       const object = room.children[this.count++];
 
@@ -66,14 +65,14 @@ export class BallshooterComponent implements OnInit, AfterViewInit {
     }
   }
 
-  animateGroup({ delta }: NgtRender, room: THREE.Group) {
+  animateGroup({ delta }: NgtRender, room: Group) {
     if (this.xr0 ) { this.handleController(room, this.xr0.controller); }
     if (this.xr1 ) { this.handleController(room, this.xr1.controller); }
 
     const radius = this.radius;
     const range = 3 - radius;
-    let normal = new THREE.Vector3();
-    const relativeVelocity = new THREE.Vector3();
+    let normal = new Vector3();
+    const relativeVelocity = new Vector3();
 
     for (let i = 0; i < room.children.length; i++) {
 
@@ -87,7 +86,7 @@ export class BallshooterComponent implements OnInit, AfterViewInit {
 
       if (object.position.x < - range || object.position.x > range) {
 
-        object.position.x = THREE.MathUtils.clamp(object.position.x, - range, range);
+        object.position.x = MathUtils.clamp(object.position.x, - range, range);
         object.userData.velocity.x = - object.userData.velocity.x;
 
       }
@@ -104,7 +103,7 @@ export class BallshooterComponent implements OnInit, AfterViewInit {
 
       if (object.position.z < - range || object.position.z > range) {
 
-        object.position.z = THREE.MathUtils.clamp(object.position.z, - range, range);
+        object.position.z = MathUtils.clamp(object.position.z, - range, range);
         object.userData.velocity.z = - object.userData.velocity.z;
 
       }
