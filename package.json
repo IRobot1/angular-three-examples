@@ -1,6 +1,9 @@
 {
-  "name": "ng-angular-three",
-  "version": "0.0.1",
+  "name": "angular-three-examples",
+  "version": "0.0.3",
+  "description": "Angular Three Examples",
+  "license": "MIT",
+  "author": "anidivr",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -8,6 +11,20 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
+  "keywords": [
+    "three",
+    "three.js",
+    "typescript",
+    "3d",
+    "virtual-reality",
+    "augmented-reality",
+    "webgl",
+    "webgl2",
+    "webxr",
+    "canvas",
+    "angular",
+    "angular-three"
+  ],
   "private": true,
   "dependencies": {
     "@angular-three/core": "^3.2.0",
