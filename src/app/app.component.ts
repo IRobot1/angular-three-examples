@@ -6,16 +6,36 @@ import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { DirectionalLight, LineBasicMaterial, LineSegments } from 'three';
+import { AppCanvasService } from './app.service';
+
+class Example {
+  constructor(public tag: string,public title: string, public url: string) {}
+}
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-  state?: NgtCreatedState;
+
+  examples = [
+    new Example('ballshooter', 'vr / ballblaster', 'https://threejs.org/examples/screenshots/webxr_vr_ballshooter.jpg'),
+    new Example('cubes', 'vr / cubes', 'https://threejs.org/examples/screenshots/webxr_vr_cubes.jpg'),
+    new Example('dragging', 'vr / dragging', 'https://threejs.org/examples/screenshots/webxr_vr_dragging.jpg'),
+  ]
+
+  selected: string = 'cube';
+
+  constructor(private canvasService: AppCanvasService) { }
+
+  select(tag: string) {
+    this.selected = tag;
+    console.warn(tag)
+  }
 
   created(event: NgtCreatedState, container: HTMLDivElement) {
-    this.state = event;
+    this.canvasService.state = event;
     const renderer = event.renderer;
     const scene = event.scene;
 

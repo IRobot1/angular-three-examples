@@ -1,5 +1,5 @@
-import { NgtCreatedState, NgtRender } from "@angular-three/core";
-import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
+import { NgtRender } from "@angular-three/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 
 import { Color, Group, MathUtils, Vector3 } from 'three';
 import { XRControllerComponent } from "../xr-controller/xr-controller.component";
@@ -14,17 +14,13 @@ class RandomSettings {
   selector: 'app-ballshooter',
   templateUrl: './ballshooter.component.html',
 })
-export class BallshooterComponent implements OnInit, AfterViewInit {
+export class BallshooterComponent implements OnInit {
   @ViewChild('xr0') xr0?: XRControllerComponent;
   @ViewChild('xr1') xr1?: XRControllerComponent;
 
   radius = 0.08;
 
   shapes: Array<RandomSettings> = [];
-
-  private state?: NgtCreatedState;
-
-  constructor() { }
 
   ngOnInit(): void {
     for (let i = 0; i < 200; i++) {
@@ -34,18 +30,6 @@ export class BallshooterComponent implements OnInit, AfterViewInit {
         new Vector3(Math.random() * 0.01 - 0.005, Math.random() * 0.01 - 0.005, Math.random() * 0.01 - 0.005),
       ));
     }
-  }
-
-  ngAfterViewInit(): void {
-    if (this.state) {
-      if (this.xr0) this.xr0.ready(this.state);
-      if (this.xr1) this.xr1.ready(this.state);
-    }
-  }
-
-
-  ready(state: NgtCreatedState): void {
-    this.state = state;
   }
 
   private count = 0;

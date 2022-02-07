@@ -12,7 +12,7 @@ class RandomSettings {
   selector: 'app-dragging',
   templateUrl: './dragging.component.html',
 })
-export class DraggingComponent implements OnInit, AfterViewInit {
+export class DraggingComponent implements OnInit {
   @ViewChild('xr0') xr0?: XRControllerComponent;
   @ViewChild('xr1') xr1?: XRControllerComponent;
 
@@ -28,10 +28,6 @@ export class DraggingComponent implements OnInit, AfterViewInit {
 
   shapes: Array<RandomSettings> = [];
 
-  private state?: NgtCreatedState;
-
-  constructor() { }
-
   ngOnInit(): void {
     for (let i = 0; i < 75; i++) {
       const shapename = this.geometries[Math.floor(Math.random() * this.geometries.length)];
@@ -42,18 +38,6 @@ export class DraggingComponent implements OnInit, AfterViewInit {
         new Vector3(Math.random() + 0.4, Math.random() + 0.4, Math.random() + 0.4),
       ));
     }
-  }
-
-  ngAfterViewInit(): void {
-    if (this.state) {
-      if (this.xr0) this.xr0.ready(this.state);
-      if (this.xr1) this.xr1.ready(this.state);
-    }
-  }
-
-
-  ready(state: NgtCreatedState): void {
-    this.state = state;
   }
 
 }

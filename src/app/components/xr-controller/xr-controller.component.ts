@@ -1,6 +1,8 @@
 import { Component, Input } from "@angular/core";
 import { NgtCreatedState, NgtRender } from "@angular-three/core";
 import { AdditiveBlending, Group, Line, Matrix4, Mesh, MeshBasicMaterial, Raycaster, RingGeometry, XRInputSource } from "three";
+import { AppCanvasService } from "../../app.service";
+import { OnInit } from "@angular/core";
 
 export type TrackType = 'pointer' | 'grab';
 
@@ -8,7 +10,7 @@ export type TrackType = 'pointer' | 'grab';
   selector: 'app-xr-controller',
   templateUrl: './xr-controller.component.html',
 })
-export class XRControllerComponent {
+export class XRControllerComponent implements OnInit {
   @Input() index = 0;
   @Input() tracktype: TrackType = 'pointer';
 
@@ -20,9 +22,13 @@ export class XRControllerComponent {
 
   trackedpointerline?: Line;
 
-  ready(state: NgtCreatedState): void {
-    const renderer = state.renderer;
-    const scene = state.scene;
+  constructor(private canvasService: AppCanvasService) { }
+
+  ngOnInit(): void {
+    if (!this.canvasService.state) return;
+
+    const renderer = this.canvasService.state.renderer;
+    const scene = this.canvasService.state.scene;
 
     this.controller = renderer.xr.getController(this.index);
     scene.add(this.controller);

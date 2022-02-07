@@ -14,15 +14,11 @@ class RandomSettings {
   selector: 'app-vr-cubes',
   templateUrl: './cubes.component.html',
 })
-export class CubesComponent implements OnInit, AfterViewInit {
+export class CubesComponent implements OnInit {
   @ViewChild('xr0') xr0?: XRControllerComponent;
   @ViewChild('xr1') xr1?: XRControllerComponent;
 
   shapes: Array<RandomSettings> = [];
-
-  private state?: NgtCreatedState;
-
-  constructor() { }
 
   ngOnInit(): void {
     for (let i = 0; i < 200; i++) {
@@ -34,18 +30,6 @@ export class CubesComponent implements OnInit, AfterViewInit {
         new Vector3(Math.random() + 0.5, Math.random() + 0.5, Math.random() + 0.5),
       ));
     }
-  }
-
-  ngAfterViewInit(): void {
-    if (this.state) {
-      if (this.xr0) this.xr0.ready(this.state);
-      if (this.xr1) this.xr1.ready(this.state);
-    }
-  }
-
-
-  ready(state: NgtCreatedState): void {
-    this.state = state;
   }
 
   private handleController(delta: number, room: Group, controller?: Group) {

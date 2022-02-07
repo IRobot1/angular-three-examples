@@ -1,13 +1,21 @@
-<div #div style="height:calc(100vh - 18px);overflow:hidden">
-  <ngt-canvas (created)="created($event,div);example.ready($event)" [vr]="true"
+<div style="display:flex;flex-direction:row;align-items:stretch;height:100vh">
+  <div style="margin: 8px;min-width:200px;height:calc(100vh - 8px);overflow-y:auto">
+    <div *ngFor="let example of examples" style="cursor:pointer" [class.highlight]="selected==example.tag" (click)="select(example.tag)">
+      <img src="{{example.url}}" style="width:190px" />
+      <div style="padding-left:1rem">{{example.title}}</div>
+    </div>
+  </div>
+  <div #div style="flex: 1">
+    <ngt-canvas (created)="created($event,div)" [vr]="true"
               [scene]="{ background: '#505050' | color }"
               [camera]="{ fov: 50, position: [0, 1.6, 3]}">
     <ngt-stats></ngt-stats>
     <ngt-hemisphere-light [args]="['#606060', '#404040']"></ngt-hemisphere-light>
 
-    <!--<app-ballshooter #example></app-ballshooter>-->
-    <!--<app-vr-cubes #example></app-vr-cubes>-->
-    <app-dragging #example></app-dragging>
-    <!--<app-cube [position]="[2, 0, 0]"></app-cube>-->
-  </ngt-canvas>
+    <app-ballshooter *ngIf="selected=='ballshooter'"></app-ballshooter>
+    <app-vr-cubes  *ngIf="selected=='cubes'"></app-vr-cubes>
+    <app-dragging  *ngIf="selected=='dragging'"></app-dragging>
+    <app-cube *ngIf="selected=='cube'" [position]="[0, 2, 0]"></app-cube>
+    </ngt-canvas>
+  </div>
 </div>
