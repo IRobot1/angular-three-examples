@@ -3,7 +3,6 @@ import { NgtCreatedState } from '@angular-three/core';
 
 import { BoxLineGeometry } from 'three/examples/jsm/geometries/BoxLineGeometry.js';
 import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
-import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { DirectionalLight, LineBasicMaterial, LineSegments } from 'three';
 import { AppCanvasService } from './app.service';
@@ -23,20 +22,15 @@ export class AppComponent {
     new Example('ballshooter', 'vr / ballblaster', 'https://threejs.org/examples/screenshots/webxr_vr_ballshooter.jpg'),
     new Example('cubes', 'vr / cubes', 'https://threejs.org/examples/screenshots/webxr_vr_cubes.jpg'),
     new Example('dragging', 'vr / dragging', 'https://threejs.org/examples/screenshots/webxr_vr_dragging.jpg'),
+    new Example('handinput', 'vr / handinput', 'https://threejs.org/examples/screenshots/webxr_vr_handinput.jpg'),
   ]
 
   selected: string = 'cube';
 
   constructor(private canvasService: AppCanvasService) { }
 
-  select(tag: string) {
-    this.selected = tag;
-    console.warn(tag)
-  }
-
   created(event: NgtCreatedState, container: HTMLDivElement) {
     this.canvasService.state = event;
-    const renderer = event.renderer;
     const scene = event.scene;
 
     const controls = new OrbitControls(event.camera, container);
@@ -62,20 +56,5 @@ export class AppComponent {
     light.shadow.mapSize.set(4096, 4096);
     scene.add(light);
 
-    // The XRControllerModelFactory will automatically fetch controller models
-    // that match what the user is holding as closely as possible. The models
-    // should be attached to the object returned from getControllerGrip in
-    // order to match the orientation of the held device.
-
-    const controllerModelFactory = new XRControllerModelFactory();
-
-    const controllerGrip1 = renderer.xr.getControllerGrip(0);
-    controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
-
-    scene.add(controllerGrip1);
-
-    const controllerGrip2 = renderer.xr.getControllerGrip(1);
-    controllerGrip2.add(controllerModelFactory.createControllerModel(controllerGrip2));
-    scene.add(controllerGrip2);
   }
 }

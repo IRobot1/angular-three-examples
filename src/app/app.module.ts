@@ -18,6 +18,7 @@ import { XRControllerComponent } from './components/xr-controller/xr-controller.
 import { CubesComponent } from './components/cubes/cubes.component';
 import { DraggingComponent } from './components/dragging/dragging.component';
 import { AppCanvasService } from './app.service';
+import { HandInputComponent } from './components/handinput/handinput.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { AppCanvasService } from './app.service';
     BallshooterComponent,
     CubesComponent,
     DraggingComponent,
+    HandInputComponent,
   ],
   imports: [
     BrowserModule,

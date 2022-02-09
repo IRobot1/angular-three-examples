@@ -1,6 +1,6 @@
 <div style="display:flex;flex-direction:row;align-items:stretch;height:100vh">
   <div style="margin: 8px;min-width:200px;height:calc(100vh - 8px);overflow-y:auto">
-    <div *ngFor="let example of examples" style="cursor:pointer" [class.highlight]="selected==example.tag" (click)="select(example.tag)">
+    <div *ngFor="let example of examples" style="cursor:pointer" [class.highlight]="selected==example.tag" (click)="selected=example.tag">
       <img src="{{example.url}}" style="width:190px" />
       <div style="padding-left:1rem">{{example.title}}</div>
     </div>
@@ -15,6 +15,7 @@
     <app-ballshooter *ngIf="selected=='ballshooter'"></app-ballshooter>
     <app-vr-cubes  *ngIf="selected=='cubes'"></app-vr-cubes>
     <app-dragging  *ngIf="selected=='dragging'"></app-dragging>
+    <app-handinput  *ngIf="selected=='handinput'"></app-handinput>
     <app-cube *ngIf="selected=='cube'" [position]="[0, 2, 0]"></app-cube>
     </ngt-canvas>
   </div>

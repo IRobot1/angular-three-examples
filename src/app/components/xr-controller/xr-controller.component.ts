@@ -1,10 +1,12 @@
-import { Component, Input } from "@angular/core";
-import { NgtCreatedState, NgtRender } from "@angular-three/core";
+import { NgtRender } from "@angular-three/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { AdditiveBlending, Group, Line, Matrix4, Mesh, MeshBasicMaterial, Raycaster, RingGeometry, XRInputSource } from "three";
+import { XRControllerModelFactory } from "three/examples/jsm/webxr/XRControllerModelFactory";
+import { XRHandModelFactory } from 'three/examples/jsm/webxr/XRHandModelFactory.js';
 import { AppCanvasService } from "../../app.service";
-import { OnInit } from "@angular/core";
 
 export type TrackType = 'pointer' | 'grab';
+
 
 @Component({
   selector: 'app-xr-controller',
@@ -13,8 +15,10 @@ export type TrackType = 'pointer' | 'grab';
 export class XRControllerComponent implements OnInit {
   @Input() index = 0;
   @Input() tracktype: TrackType = 'pointer';
+  @Input() usehands = false;
 
   controller?: Group;
+  hand?: Group;
 
   position = new Float32Array([0, 0, 0, 0, 0, - 1]);
   color = new Float32Array([0.5, 0.5, 0.5, 0, 0, 0]);
@@ -33,6 +37,27 @@ export class XRControllerComponent implements OnInit {
     this.controller = renderer.xr.getController(this.index);
     scene.add(this.controller);
 
+    // The XRControllerModelFactory will automatically fetch controller models
+    // that match what the user is holding as closely as possible. The models
+    // should be attached to the object returned from getControllerGrip in
+    // order to match the orientation of the held device.
+    const controllerModelFactory = new XRControllerModelFactory();
+
+    const controllerGrip = renderer.xr.getControllerGrip(this.index);
+    controllerGrip.add(controllerModelFactory.createControllerModel(controllerGrip));
+    scene.add(controllerGrip);
+
+    if (this.usehands) {
+      const handModelFactory = new XRHandModelFactory();
+
+      this.hand = renderer.xr.getHand(this.index);
+      this.hand.add(handModelFactory.createHandModel(this.hand));
+      scene.add(this.hand);
+
+      //hand.addEventListener('pinchstart', onPinchStartLeft);
+      //hand.addEventListener('pinchend', () => {
+      //});
+    }
 
     this.controller.addEventListener('selectstart', (event) => {
       const controller = <Group>event.target;
@@ -58,6 +83,7 @@ export class XRControllerComponent implements OnInit {
       const controller = <Group>event.target;
       const source = <XRInputSource>event.data;
       controller.name = source.handedness;
+      if (this.hand) this.hand.name = source.handedness;
       if (source.targetRayMode == 'tracked-pointer') {
         if (this.trackedpointerline) {
           controller.add(this.trackedpointerline);
