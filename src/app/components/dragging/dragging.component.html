@@ -1,5 +1,5 @@
-<app-xr-controller #xr0 [tracktype]="'grab'"></app-xr-controller>
-<app-xr-controller #xr1 [index]="1" [tracktype]="'grab'"></app-xr-controller>
+<app-xr-controller #xr0 [tracktype]="'grab'" (grabstart)="grabstart(xr0, $event)" (grabend)="grabend(xr0, $event)"></app-xr-controller>
+<app-xr-controller #xr1 [index]="1" [tracktype]="'grab'" (grabstart)="grabstart(xr1, $event)" (grabend)="grabend(xr1, $event)"></app-xr-controller>
 
 <ngt-mesh #mesh="ngtMesh" [name]="'floor'" [rotation]="[x,0,0]" [receiveShadow]="true">
   <ngt-plane-geometry [args]="[6,6]"></ngt-plane-geometry>
@@ -7,11 +7,11 @@
 </ngt-mesh>
 
 
-<ngt-group #group="ngtGroup" [name]="'room'" >
+<ngt-group #group="ngtGroup" [name]="'room'">
 
   <ngt-mesh *ngFor="let item of shapes"
             [position]="item.position" [rotation]="item.rotation" [scale]="item.scale" [castShadow]="true" [receiveShadow]="true"
-            #mesh="ngtMesh" >
+            #mesh="ngtMesh">
     <ngt-mesh-standard-material [parameters]="{ color: item.color, roughness: 0.7, metalness:0.0 }"></ngt-mesh-standard-material>
     <ngt-box-geometry *ngIf="item.shapename=='box'" [args]="[0.2, 0.2, 0.2]"></ngt-box-geometry>
     <ngt-cone-geometry *ngIf="item.shapename=='cone'" [args]="[0.2, 0.2, 64]"></ngt-cone-geometry>

@@ -1,5 +1,5 @@
-import { NgtCreatedState, NgtRender } from "@angular-three/core";
-import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
+import { NgtRender } from "@angular-three/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 
 import { Color, Euler, Group, MathUtils, Vector3 } from 'three';
 import { XRControllerComponent } from "../xr-controller/xr-controller.component";

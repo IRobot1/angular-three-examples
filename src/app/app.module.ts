@@ -19,6 +19,7 @@ import { CubesComponent } from './components/cubes/cubes.component';
 import { DraggingComponent } from './components/dragging/dragging.component';
 import { AppCanvasService } from './app.service';
 import { HandInputComponent } from './components/handinput/handinput.component';
+import { HandInputCubesComponent } from './components/handinput-cubes/handinput-cubes.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { HandInputComponent } from './components/handinput/handinput.component';
     CubesComponent,
     DraggingComponent,
     HandInputComponent,
+    HandInputCubesComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,12 +1,19 @@
 import { NgtRender } from "@angular-three/core";
-import { Component, Input, OnInit } from "@angular/core";
-import { AdditiveBlending, Group, Line, Matrix4, Mesh, MeshBasicMaterial, Raycaster, RingGeometry, XRInputSource } from "three";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import { AdditiveBlending, Group, Line, Matrix4, Mesh, MeshBasicMaterial, Raycaster, RingGeometry, Vector3, XRInputSource } from "three";
 import { XRControllerModelFactory } from "three/examples/jsm/webxr/XRControllerModelFactory";
 import { XRHandModelFactory } from 'three/examples/jsm/webxr/XRHandModelFactory.js';
 import { AppCanvasService } from "../../app.service";
 
 export type TrackType = 'pointer' | 'grab';
 
+export class GrabStartEvent {
+  constructor(public controller: Group, public grabbedobject: any, public intersect: any) { }
+}
+
+export class GrabEndEvent {
+  constructor(public controller: Group) { }
+}
 
 @Component({
   selector: 'app-xr-controller',
@@ -16,6 +23,9 @@ export class XRControllerComponent implements OnInit {
   @Input() index = 0;
   @Input() tracktype: TrackType = 'pointer';
   @Input() usehands = false;
+
+  @Output() grabstart = new EventEmitter<GrabStartEvent>();
+  @Output() grabend = new EventEmitter<GrabEndEvent>();
 
   controller?: Group;
   hand?: Group;
@@ -54,9 +64,19 @@ export class XRControllerComponent implements OnInit {
       this.hand.add(handModelFactory.createHandModel(this.hand));
       scene.add(this.hand);
 
-      //hand.addEventListener('pinchstart', onPinchStartLeft);
-      //hand.addEventListener('pinchend', () => {
-      //});
+      this.hand.addEventListener('pinchstart', (event) => {
+        const controller = <Group>event.target;
+        const indexTip = event.target.joints['index-finger-tip'];
+        const room = <Group>this.canvasService.state?.scene.getObjectByName('room');
+        const IntersectObject = this.getHandIntersection(indexTip, room);
+        this.grabstart.emit(new GrabStartEvent(controller, IntersectObject, indexTip));
+        controller.userData.isSelecting = true;
+      });
+      this.hand.addEventListener('pinchend', (event) => {
+        const controller = <Group>event.target;
+        this.grabend.emit(new GrabEndEvent(controller));
+        controller.userData.isSelecting = false;
+      });
     }
 
     this.controller.addEventListener('selectstart', (event) => {
@@ -65,8 +85,7 @@ export class XRControllerComponent implements OnInit {
         controller.userData.isSelecting = true;
       }
       else if (this.tracktype == 'grab') {
-        const room = <Group>scene.getObjectByName('room');
-        this.startgrab(controller, room);
+        this.grabstart.emit(new GrabStartEvent(controller, this.PointerIntersectObject, this.PointerIntersect));
       }
     });
     this.controller.addEventListener('selectend', (event) => {
@@ -75,8 +94,7 @@ export class XRControllerComponent implements OnInit {
         controller.userData.isSelecting = false;
       }
       else if (this.tracktype == 'grab') {
-        const room = <Group>scene.getObjectByName('room');
-        this.endgrab(controller, room);
+        this.grabend.emit(new GrabEndEvent(controller));
       }
     });
     this.controller.addEventListener('connected', (event) => {
@@ -112,7 +130,7 @@ export class XRControllerComponent implements OnInit {
     return new Mesh(geometry, material);
   }
 
-  private getIntersections(controller: Group, room: Group): any {
+  private getPointerIntersections(controller: Group, room: Group): any {
     const tempMatrix = new Matrix4();
 
     tempMatrix.identity().extractRotation(controller.matrixWorld);
@@ -125,51 +143,45 @@ export class XRControllerComponent implements OnInit {
     return raycaster.intersectObjects(room.children, false);
   }
 
-  private startgrab(controller: Group, room: Group) {
-    if (this.IntersectObject) {
-      controller.attach(this.IntersectObject);
-      controller.userData.selected = this.IntersectObject;
-      if (this.trackedpointerline) {
-        this.trackedpointerline.scale.z = this.Intersect.distance;
+  private getHandIntersection(indexTip: any, room: Group): Mesh | undefined {
+    const tmpVector1 = new Vector3();
+    const tmpVector2 = new Vector3();
+
+    for (let i = 0; i < room.children.length; i++) {
+      const child = <Mesh>room.children[i];
+      const distance = indexTip.getWorldPosition(tmpVector1).distanceTo(child.getWorldPosition(tmpVector2));
+
+      if (child.geometry.boundingSphere) {
+        if (distance < child.geometry.boundingSphere.radius * child.scale.x) {
+          return child;
+        }
       }
     }
+    return undefined;
   }
 
-  private endgrab(controller: Group, room: Group) {
-    if (controller.userData.selected) {
-      const object = controller.userData.selected;
-      object.material.emissive.b = 0;
-
-      room.attach(object);
-      controller.userData.selected = undefined;
-      if (this.trackedpointerline) {
-        this.trackedpointerline.scale.z = 1.5;
-      }
-    }
-  }
-
-  private Intersect: any;
-  private IntersectObject: any;
+  private PointerIntersect: any;
+  private PointerIntersectObject: any;
 
   animateGroup(event: NgtRender) {
     const room = <Group>event.scene.getObjectByName('room');
     if (this.controller && room) {
 
-      const intersects = this.getIntersections(this.controller, room);
+      const intersects = this.getPointerIntersections(this.controller, room);
 
       if (intersects.length > 0) {
-        if (this.IntersectObject != intersects[0].object) {
+        if (this.PointerIntersectObject != intersects[0].object) {
 
-          if (this.IntersectObject) this.IntersectObject.material.emissive.b = 0;
+          if (this.PointerIntersectObject) this.PointerIntersectObject.material.emissive.b = 0;
 
-          this.Intersect = intersects[0];
-          this.IntersectObject = this.Intersect.object;
-          this.IntersectObject.material.emissive.b = 1;
+          this.PointerIntersect = intersects[0];
+          this.PointerIntersectObject = this.PointerIntersect.object;
+          this.PointerIntersectObject.material.emissive.b = 1;
         }
       } else {
-        if (this.IntersectObject) {
-          this.IntersectObject.material.emissive.b = 0;
-          this.IntersectObject = undefined;
+        if (this.PointerIntersectObject) {
+          this.PointerIntersectObject.material.emissive.b = 0;
+          this.PointerIntersectObject = undefined;
         }
 
       }
