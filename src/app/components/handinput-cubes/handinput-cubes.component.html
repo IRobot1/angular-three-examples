@@ -1,6 +1,6 @@
-<app-xr-controller #xr0 [usehands]="true" [tracktype]="'grab'" (grabstart)="leftgrabstart(xr0, $event)" (grabend)="leftgrabend(xr0, $event)"></app-xr-controller>
-<app-xr-controller #xr1 [index]="1" [usehands]="true" [tracktype]="'grab'" (grabstart)="rightgrabstart(xr0, $event)" (grabend)="rightgrabend(xr0, $event)"></app-xr-controller>
+<app-xr-controller #xr0 [usehands]="false" [tracktype]="'grab'" (grabstart)="leftgrabstart(xr0, $event, room.group)" (grabend)="leftgrabend(xr0, $event, room.group)"></app-xr-controller>
+<app-xr-controller #xr1 [index]="1" [usehands]="false" [tracktype]="'grab'" (grabstart)="rightgrabstart(xr0, $event, room.group)" (grabend)="rightgrabend(xr0, $event, room.group)"></app-xr-controller>
 
-<ngt-group #group="ngtGroup" [name]="'room'"
+<ngt-group #room="ngtGroup" [name]="'room'"
            (animateReady)="animateGroup($event)">
 </ngt-group>

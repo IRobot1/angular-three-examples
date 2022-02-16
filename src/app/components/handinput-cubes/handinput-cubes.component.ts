@@ -1,10 +1,13 @@
 import { NgtRender } from "@angular-three/core";
 import { Component, ViewChild } from "@angular/core";
 
-import { BoxGeometry, Mesh, MeshStandardMaterial, Vector3 } from 'three';
+import { BoxGeometry, Group, Mesh, MeshStandardMaterial, Quaternion, Vector3 } from 'three';
 import { AppCanvasService } from "../../app.service";
 import { GrabEndEvent, GrabStartEvent, XRControllerComponent } from "../xr-controller/xr-controller.component";
 
+//
+// EXAMPLE NOT WORKING YET
+//
 
 @Component({
   selector: 'app-handinput-cubes',
@@ -14,55 +17,54 @@ export class HandInputCubesComponent {
   @ViewChild('xr0') xr0?: XRControllerComponent;
   @ViewChild('xr1') xr1?: XRControllerComponent;
 
-  private leftstate?: GrabStartEvent;
-  private rightstate?: GrabStartEvent;
+  private lefthand?: GrabStartEvent;
+  private righthand?: GrabStartEvent;
 
-  private spheres: Array<Mesh> = [];
-  private grabbing = false;
+  private bothgrabbing = false;
 
   // scaling
   private active = false;
   private initialDistance = 0;
-  private object?: Mesh;
   private initialScale = 1;
 
 
   constructor(private canvasService: AppCanvasService) { }
 
-  private collideObject(indexTip: any): Mesh | undefined {
+  private checkbothgrabbing(): boolean {
+    if (!(this.lefthand && this.righthand)) return false;
 
-    const tmpVector1 = new Vector3();
-    const tmpVector2 = new Vector3();
+    const leftobject = this.lefthand.grabbedobject;
+    const rightobject = this.righthand.grabbedobject;
 
-    for (let i = 0; i < this.spheres.length; i++) {
-
-      const sphere = this.spheres[i];
-      const distance = indexTip.getWorldPosition(tmpVector1).distanceTo(sphere.getWorldPosition(tmpVector2));
-
-      if (sphere.geometry.boundingSphere) {
-        if (distance < sphere.geometry.boundingSphere.radius * sphere.scale.x) {
-          return sphere;
-        }
-      }
-    }
-    return undefined;
+    return leftobject === rightobject;
+      this.active = true;
+      this.initialScale = leftobject.scale.x;
+      //const indexTip = event.intersect;
+      //this.initialDistance = indexTip.position.distanceTo(this.rightstate.intersect.position);
   }
 
-  leftgrabstart(xr: XRControllerComponent, event: GrabStartEvent) {
-    this.leftstate = event;
-    if (this.grabbing) {
-
-      const leftobject = event.grabbedobject;
-      if (leftobject && this.rightstate) {
-        const rightobject = this.rightstate.controller.userData.selected;
-        console.log('sphere1', leftobject, 'sphere2', rightobject);
-        if (leftobject === rightobject) {
-          this.active = true;
-          this.object = leftobject;
-          this.initialScale = leftobject.scale.x;
-          const indexTip = event.intersect;
-          this.initialDistance = indexTip.position.distanceTo(this.rightstate.intersect.position);
-        }
+  leftgrabstart(xr: XRControllerComponent, event: GrabStartEvent, room: Group) {
+    this.lefthand = event;
+    //if (this.bothgrabbing) {
+    //  const leftobject = event.grabbedobject;
+    //  if (leftobject && this.righthand) {
+    //    const rightobject = this.righthand.controller.userData.selected;
+    //    console.log('sphere1', leftobject, 'sphere2', rightobject);
+    //    if (leftobject === rightobject) {
+    //      this.active = true;
+    //      this.initialScale = leftobject.scale.x;
+    //      const indexTip = event.intersect;
+    //      this.initialDistance = indexTip.position.distanceTo(this.righthand.intersect.position);
+    //    }
+    //  }
+    //}
+    if (event.grabbedobject) {
+      if (event.controller) {
+        event.controller.attach(event.grabbedobject);
+        event.controller.userData.selected = event.grabbedobject;
+      }
+      if (xr.trackedpointerline) {
+        xr.trackedpointerline.scale.z = event.intersect.distance;
       }
     }
     else {
@@ -74,60 +76,80 @@ export class HandInputCubesComponent {
       });
       const spawn = new Mesh(geometry, material);
       spawn.geometry.computeBoundingSphere();
+      spawn.name = 'box' + room.children.length.toString();
 
-      const indexTip = event.intersect;
-      spawn.position.copy(indexTip.position);
-      spawn.quaternion.copy(indexTip.quaternion);
+      let position: Vector3;
+      let quaternion: Quaternion;
 
-      this.spheres.push(spawn);
+      //const indexTip = event.intersect;
+      //if (indexTip) {
+      //  position = indexTip.position;
+      //  quaternion = indexTip.quaternion;
+      //}
+      //else  {
+      position = event.controller.position;
+      quaternion = event.controller.quaternion;
+      //}
+      spawn.position.copy(position);
+      spawn.quaternion.copy(quaternion);
 
-      if (this.canvasService.state) {
-        this.canvasService.state.scene.add(spawn);
-      }
+      room.add(spawn);
     }
   }
 
-  leftgrabend(xr: XRControllerComponent, event: GrabEndEvent) {
-    this.active = false;
-    this.leftstate = undefined;
-  }
-
-  rightgrabstart(xr: XRControllerComponent, event: GrabStartEvent) {
-    this.rightstate = event;
-    const indexTip = event.intersect;
-    const object = this.collideObject(indexTip);
-    if (object) {
-      this.grabbing = true;
-      indexTip.attach(object);
-      event.controller.userData.selected = object;
-      console.log('Selected', object);
-    }
-
-  }
-
-  rightgrabend(xr: XRControllerComponent, event: GrabEndEvent) {
+  leftgrabend(xr: XRControllerComponent, event: GrabEndEvent, room: Group) {
     if (event.controller.userData.selected) {
       const object = event.controller.userData.selected;
       object.material.emissive.b = 0;
-      if (this.canvasService.state) {
-        this.canvasService.state.scene.attach(object);
-      }
+
+      room.attach(object);
 
       event.controller.userData.selected = undefined;
-      this.grabbing = false;
+      if (xr.trackedpointerline) {
+        xr.trackedpointerline.scale.z = 1.5;
+      }
+    }
+    else {
+      this.active = false;
+      this.lefthand = undefined;
+    }
+  }
+
+  rightgrabstart(xr: XRControllerComponent, event: GrabStartEvent, room: Group) {
+    this.righthand = event;
+    if (event.grabbedobject) {
+      this.bothgrabbing = true;
+
+      //event.intersect.attach(event.grabbedobject);
+      event.controller.userData.selected = event.grabbedobject;
+      console.log('Selected', event.grabbedobject);
+    }
+
+  }
+
+  rightgrabend(xr: XRControllerComponent, event: GrabEndEvent, room: Group) {
+    if (event.controller.userData.selected) {
+      const object = event.controller.userData.selected;
+      object.material.emissive.b = 0;
+      room.attach(object);
+
+      event.controller.userData.selected = undefined;
+      this.bothgrabbing = false;
     }
     this.active = false;
-    this.rightstate = undefined;
+
+    this.righthand = undefined;
   }
 
   animateGroup({ delta }: NgtRender) {
 
     if (this.active) {
-      const indexTip1Pos = this.leftstate?.intersect.position;
-      const indexTip2Pos = this.rightstate?.intersect.position;
+      console.warn('scaling')
+      const indexTip1Pos = this.lefthand?.intersect.position;
+      const indexTip2Pos = this.righthand?.intersect.position;
       const distance = indexTip1Pos.distanceTo(indexTip2Pos);
       const newScale = this.initialScale + distance / this.initialDistance - 1;
-      this.object?.scale.setScalar(newScale);
+      this.lefthand?.grabbedobject.scale.setScalar(newScale);
 
     }
   }

@@ -19,7 +19,7 @@ class Example {
 export class AppComponent {
 
   examples = [
-    new Example('handinputcubes', 'vr / handinput cubes', 'https://threejs.org/examples/screenshots/webxr_vr_handinput_cubes.jpg'),
+    //new Example('handinputcubes', 'vr / handinput cubes', 'https://threejs.org/examples/screenshots/webxr_vr_handinput_cubes.jpg'),
     new Example('ballshooter', 'vr / ballblaster', 'https://threejs.org/examples/screenshots/webxr_vr_ballshooter.jpg'),
     new Example('cubes', 'vr / cubes', 'https://threejs.org/examples/screenshots/webxr_vr_cubes.jpg'),
     new Example('dragging', 'vr / dragging', 'https://threejs.org/examples/screenshots/webxr_vr_dragging.jpg'),
