@@ -1,7 +1,7 @@
 import { NgtRender } from "@angular-three/core";
 import { Component, OnInit, ViewChild } from "@angular/core";
 
-import { Color, Euler, Group, MathUtils, Vector3 } from 'three';
+import { Color, Euler, Group, MathUtils, Object3D, Vector3 } from 'three';
 import { XRControllerComponent } from "../xr-controller/xr-controller.component";
 
 
@@ -49,7 +49,8 @@ export class CubesComponent implements OnInit {
     }
   }
 
-  animateGroup({ delta }: NgtRender, room: Group) {
+  animateGroup({ delta }: NgtRender, object: Object3D) {
+    const room = <Group>object;
     if (this.xr0) { this.handleController(delta * 60, room, this.xr0.controller); }
     if (this.xr1) { this.handleController(delta * 60, room, this.xr1.controller); }
 

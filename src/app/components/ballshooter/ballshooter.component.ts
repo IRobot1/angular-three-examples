@@ -1,7 +1,7 @@
 import { NgtRender } from "@angular-three/core";
 import { Component, OnInit, ViewChild } from "@angular/core";
 
-import { Color, Group, MathUtils, Vector3 } from 'three';
+import { Color, Group, MathUtils, Object3D, Vector3 } from 'three';
 import { XRControllerComponent } from "../xr-controller/xr-controller.component";
 
 
@@ -49,7 +49,8 @@ export class BallshooterComponent implements OnInit {
     }
   }
 
-  animateGroup({ delta }: NgtRender, room: Group) {
+  animateGroup({ delta }: NgtRender, object: Object3D) {
+    const room = <Group>object;
     if (this.xr0 ) { this.handleController(room, this.xr0.controller); }
     if (this.xr1 ) { this.handleController(room, this.xr1.controller); }
 

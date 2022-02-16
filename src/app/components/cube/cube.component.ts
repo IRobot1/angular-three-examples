@@ -1,6 +1,6 @@
 import { Component, Input } from "@angular/core";
 import { NgtVector3 } from "@angular-three/core";
-import { Mesh } from "three";
+import { Mesh, Object3D } from "three";
 
 @Component({
   selector: 'app-cube',
@@ -12,7 +12,7 @@ export class CubeComponent {
   hover = false;
   active = false;
 
-  onAnimate(mesh: Mesh) {
-    mesh.rotation.x = mesh.rotation.y += 0.01;
+  onAnimate(object: Object3D) {
+    object.rotation.x = object.rotation.y += 0.01;
   }
 }

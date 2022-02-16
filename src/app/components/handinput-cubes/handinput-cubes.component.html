@@ -2,5 +2,5 @@
 <app-xr-controller #xr1 [index]="1" [usehands]="false" [tracktype]="'grab'" (grabstart)="rightgrabstart(xr0, $event, room.group)" (grabend)="rightgrabend(xr0, $event, room.group)"></app-xr-controller>
 
 <ngt-group #room="ngtGroup" [name]="'room'"
-           (animateReady)="animateGroup($event)">
+           (animateReady)="animateGroup($event.state)">
 </ngt-group>

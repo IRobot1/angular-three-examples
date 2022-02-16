@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
-import { NgtColorPipeModule, NgtCoreModule, NgtObject3dControllerModule, NgtRepeatModule } from '@angular-three/core';
+import { NgtColorPipeModule, NgtCoreModule, NgtObjectControllerModule, NgtRepeatModule } from '@angular-three/core';
 import { NgtMeshModule } from '@angular-three/core/meshes';
 import { NgtLineBasicMaterialModule, NgtMeshBasicMaterialModule, NgtMeshLambertMaterialModule, NgtMeshStandardMaterialModule } from '@angular-three/core/materials';
 import { NgtBoxGeometryModule, NgtBufferGeometryModule, NgtConeGeometryModule, NgtCylinderGeometryModule, NgtIcosahedronGeometryModule, NgtPlaneGeometryModule, NgtTorusGeometryModule } from '@angular-three/core/geometries';
@@ -44,7 +44,7 @@ import { HandInputCubesComponent } from './components/handinput-cubes/handinput-
     NgtRepeatModule,
     NgtMeshLambertMaterialModule,
     NgtHemisphereLightModule,
-    NgtObject3dControllerModule,
+    NgtObjectControllerModule,
     NgtGroupModule,
     NgtStatsModule,
     NgtBufferGeometryModule,

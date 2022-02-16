@@ -1,4 +1,4 @@
-<ngt-group (animateReady)="animateGroup($event)">
+<ngt-group (animateReady)="animateGroup($event.state)">
   <!-- https://github.com/nartc/angular-three/blob/b2f3275c99a797f33e757485231564d07daebef5/packages/soba/staging/src/stars/stars.component.ts -->
   <!-- *ngIf="targetRayMode == 'tracked-pointer'" -->
     <ngt-line #line="ngtLine" (ready)="lineready(line.line)" >

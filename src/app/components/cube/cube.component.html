@@ -1,5 +1,4 @@
-<ngt-mesh #mesh="ngtMesh"
-          (animateReady)="onAnimate(mesh.mesh)"
+<ngt-mesh (animateReady)="onAnimate($event.object)"
           (click)="active = !active"
           (pointerover)="hover = true"
           (pointerout)="hover = false"
