@@ -25,7 +25,7 @@ export class AppComponent {
     new Example('handinput', 'vr / handinput', 'https://threejs.org/examples/screenshots/webxr_vr_handinput.jpg'),
   ]
 
-  selected: string = 'handinputcubes';
+  selected: string = 'cube';
 
   constructor() { }
 

@@ -7,17 +7,17 @@
   </div>
   <div #div style="flex: 1">
     <ngt-canvas (created)="created($event,div)" [vr]="true"
-              [scene]="{ background: '#505050' | color }"
-              [camera]="{ fov: 50, position: [0, 1.6, 3]}">
-    <ngt-stats></ngt-stats>
-    <ngt-hemisphere-light [args]="['#606060', '#404040']"></ngt-hemisphere-light>
+                [scene]="{ background: '#505050' | color }"
+                [camera]="{ fov: 50, position: [0, 1.6, 3]}">
+      <ngt-stats></ngt-stats>
+      <ngt-hemisphere-light [args]="['#606060', '#404040']"></ngt-hemisphere-light>
 
-    <app-ballshooter *ngIf="selected=='ballshooter'"></app-ballshooter>
-    <app-vr-cubes  *ngIf="selected=='cubes'"></app-vr-cubes>
-    <app-dragging  *ngIf="selected=='dragging'"></app-dragging>
-    <app-handinput  *ngIf="selected=='handinput'"></app-handinput>
-    <app-handinput-cubes  *ngIf="selected=='handinputcubes'"></app-handinput-cubes>
-    <app-cube *ngIf="selected=='cube'" [position]="[0, 2, 0]"></app-cube>
+      <app-ballshooter *ngIf="selected=='ballshooter'"></app-ballshooter>
+      <app-vr-cubes *ngIf="selected=='cubes'"></app-vr-cubes>
+      <app-dragging *ngIf="selected=='dragging'"></app-dragging>
+      <app-handinput *ngIf="selected=='handinput'"></app-handinput>
+      <app-handinput-cubes *ngIf="selected=='handinputcubes'"></app-handinput-cubes>
+      <app-cube *ngIf="selected=='cube'" [position]="[0, 2, 0]"></app-cube>
     </ngt-canvas>
   </div>
 </div>

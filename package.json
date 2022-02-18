@@ -27,7 +27,7 @@
   ],
   "private": true,
   "dependencies": {
-    "@angular-three/core": "^4.1.0",
+    "@angular-three/core": "^4.3.0",
     "@angular/animations": "~13.2.0",
     "@angular/common": "~13.2.0",
     "@angular/compiler": "~13.2.0",
