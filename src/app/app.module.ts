@@ -17,7 +17,6 @@ import { BallshooterComponent } from './components/ballshooter/ballshooter.compo
 import { XRControllerComponent } from './components/xr-controller/xr-controller.component';
 import { CubesComponent } from './components/cubes/cubes.component';
 import { DraggingComponent } from './components/dragging/dragging.component';
-import { AppCanvasService } from './app.service';
 import { HandInputComponent } from './components/handinput/handinput.component';
 import { HandInputCubesComponent } from './components/handinput-cubes/handinput-cubes.component';
 
@@ -55,9 +54,9 @@ import { HandInputCubesComponent } from './components/handinput-cubes/handinput-
     NgtConeGeometryModule,
     NgtCylinderGeometryModule,
     NgtIcosahedronGeometryModule,
-    NgtTorusGeometryModule
+    NgtTorusGeometryModule,
   ],
-  providers: [AppCanvasService],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

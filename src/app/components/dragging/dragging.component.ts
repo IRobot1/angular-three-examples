@@ -1,7 +1,6 @@
+import { NgtCanvasStore } from "@angular-three/core";
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { Color, Euler, Group, Vector3 } from "three";
-
-import { AppCanvasService } from "../../app.service";
 
 import { GrabEndEvent, GrabStartEvent, XRControllerComponent } from "../xr-controller/xr-controller.component";
 
@@ -29,7 +28,7 @@ export class DraggingComponent implements OnInit {
     'torus'
   ];
 
-  constructor(private canvasService: AppCanvasService) { }
+  constructor(private canvasStore: NgtCanvasStore) { }
 
   ngOnInit(): void {
     for (let i = 0; i < 75; i++) {
@@ -60,7 +59,7 @@ export class DraggingComponent implements OnInit {
       const object = event.controller.userData.selected;
       object.material.emissive.b = 0;
 
-      const room = <Group>this.canvasService.state?.scene.getObjectByName('room');
+      const room = <Group>this.canvasStore.get((s) => s.scene).getObjectByName('room');
       room.attach(object);
 
       event.controller.userData.selected = undefined;

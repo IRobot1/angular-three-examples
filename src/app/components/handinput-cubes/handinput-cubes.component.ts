@@ -2,7 +2,6 @@ import { NgtRender } from "@angular-three/core";
 import { Component, ViewChild } from "@angular/core";
 
 import { BoxGeometry, Group, Mesh, MeshStandardMaterial, Quaternion, Vector3 } from 'three';
-import { AppCanvasService } from "../../app.service";
 import { GrabEndEvent, GrabStartEvent, XRControllerComponent } from "../xr-controller/xr-controller.component";
 
 //
@@ -28,7 +27,7 @@ export class HandInputCubesComponent {
   private initialScale = 1;
 
 
-  constructor(private canvasService: AppCanvasService) { }
+  constructor() { }
 
   private checkbothgrabbing(): boolean {
     if (!(this.lefthand && this.righthand)) return false;

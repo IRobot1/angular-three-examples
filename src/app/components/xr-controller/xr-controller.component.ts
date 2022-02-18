@@ -1,9 +1,8 @@
-import { NgtRender } from "@angular-three/core";
+import { NgtCanvasStore, NgtRender } from "@angular-three/core";
 import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { AdditiveBlending, Group, Line, Matrix4, Mesh, MeshBasicMaterial, Raycaster, RingGeometry, Vector3, XRInputSource } from "three";
 import { XRControllerModelFactory } from "three/examples/jsm/webxr/XRControllerModelFactory";
 import { XRHandModelFactory } from 'three/examples/jsm/webxr/XRHandModelFactory.js';
-import { AppCanvasService } from "../../app.service";
 
 export type TrackType = 'pointer' | 'grab';
 
@@ -36,13 +35,11 @@ export class XRControllerComponent implements OnInit {
 
   trackedpointerline?: Line;
 
-  constructor(private canvasService: AppCanvasService) { }
+  constructor(private canvasStore: NgtCanvasStore) { }
 
   ngOnInit(): void {
-    if (!this.canvasService.state) return;
-
-    const renderer = this.canvasService.state.renderer;
-    const scene = this.canvasService.state.scene;
+    const renderer = this.canvasStore.get((s) => s.renderer);
+    const scene = this.canvasStore.get((s) => s.scene);
 
     this.controller = renderer.xr.getController(this.index);
     scene.add(this.controller);
@@ -67,7 +64,7 @@ export class XRControllerComponent implements OnInit {
       this.hand.addEventListener('pinchstart', (event) => {
         const controller = <Group>event.target;
         const indexTip = event.target.joints['index-finger-tip'];
-        const room = <Group>this.canvasService.state?.scene.getObjectByName('room');
+        const room = <Group>this.canvasStore.get((s) => s.scene).getObjectByName('room');
         const IntersectObject = this.getHandIntersection(indexTip, room);
         this.grabstart.emit(new GrabStartEvent(controller, IntersectObject, indexTip));
         controller.userData.isSelecting = true;
