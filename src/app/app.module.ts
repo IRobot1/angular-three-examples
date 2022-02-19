@@ -19,6 +19,7 @@ import { CubesComponent } from './components/cubes/cubes.component';
 import { DraggingComponent } from './components/dragging/dragging.component';
 import { HandInputComponent } from './components/handinput/handinput.component';
 import { HandInputCubesComponent } from './components/handinput-cubes/handinput-cubes.component';
+import { NgtPhysicsModule } from '@angular-three/cannon';
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import { HandInputCubesComponent } from './components/handinput-cubes/handinput-
     NgtCylinderGeometryModule,
     NgtIcosahedronGeometryModule,
     NgtTorusGeometryModule,
+    NgtPhysicsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
