@@ -27,7 +27,6 @@
   ],
   "private": true,
   "dependencies": {
-    "@angular-three/cannon": "^4.5.0",
     "@angular-three/core": "^4.5.0",
     "@angular/animations": "~13.2.0",
     "@angular/common": "~13.2.0",
