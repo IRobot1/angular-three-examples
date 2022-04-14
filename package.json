@@ -27,8 +27,8 @@
   ],
   "private": true,
   "dependencies": {
-    "@angular-three/cannon": "^4.3.0",
-    "@angular-three/core": "^4.3.0",
+    "@angular-three/cannon": "^4.5.0",
+    "@angular-three/core": "^4.5.0",
     "@angular/animations": "~13.2.0",
     "@angular/common": "~13.2.0",
     "@angular/compiler": "~13.2.0",
@@ -37,7 +37,6 @@
     "@angular/platform-browser": "~13.2.0",
     "@angular/platform-browser-dynamic": "~13.2.0",
     "@angular/router": "~13.2.0",
-    "cannon-es": "^0.19.0",
     "rxjs": "^7.5.2",
     "three": "0.137.5",
     "tslib": "^2.1.0",
