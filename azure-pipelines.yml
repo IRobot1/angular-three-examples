@@ -17,9 +17,9 @@ steps:
 
 - script: |
     npm install -g @angular/cli
-    npm install
-    ng build --prod
-  displayName: 'npm install and build'
+    npm install --legacy-peer-deps
+    npm run build
+    displayName: 'npm install and build'
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: 'dist/angular-three-examples'
